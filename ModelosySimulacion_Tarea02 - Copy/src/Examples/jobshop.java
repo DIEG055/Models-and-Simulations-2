@@ -39,18 +39,18 @@ public class jobshop {
         stations = new Store[numStations + 1];
         numTasks = new int[numJobTypes + 1];
         int maxNumTask = 5;
-        route = new int [numStations + 1] [maxNumTask + 1];
+        route = new int[numStations + 1][maxNumTask + 1];
         meanService = new float[numStations + 1][maxNumTask + 1];
         probDistribJobType = new float[numJobTypes + 1];
-        queues = new Queue[stations.length+1];
-        for (int i =0; i <= stations.length; i++) {
+        queues = new Queue[stations.length + 1];
+        for (int i = 0; i <= stations.length; i++) {
             queues[i] = new Queue<Job>("Queue");
         }
-        
+
         for (int i = 1; i <= numStations; i++) {
-            delays[i] = new DiscreteStat("Delay"+i);
+            delays[i] = new DiscreteStat("Delay" + i);
         }
-        
+
         for (int i = 1; i <= numStations; i++) {
             stations[i] = new Store("Station " + i, reader.readInt());
         }
@@ -67,7 +67,7 @@ public class jobshop {
                 meanService[i][j] = reader.readFloat();
             }
         }
-        for (int i = 1  ; i <= numJobTypes; i++) {
+        for (int i = 1; i <= numJobTypes; i++) {
             probDistribJobType[i] = reader.readFloat();
         }
 
@@ -126,10 +126,10 @@ public class jobshop {
             switch (eventType) {
                 case EVENT_ARRIVAL:
                     arrive(1);
-                    System.out.println("entre a un arrival");
+
                     break;
                 case EVENT_DEPARTURE:
-                    
+
                     depart();
                     break;
                 case EVENT_END_SIMULATION:
@@ -175,6 +175,7 @@ public class jobshop {
                 3. Current task number. */
             queues[station].offer(new Job(simTime, jobType, task));
         } else {
+
             /* A machine in this station is idle, so start service on the arriving
                 job (which has a delay of zero). */
             delays[station].record(0);
@@ -189,8 +190,8 @@ public class jobshop {
     static void depart() /* Event function for departure of a job from a particular
                       station. */ {
         int station, jobTypeQueue, task_queue;
-        jobType = (int) eventAttributes[1];
-        task = (int) eventAttributes[2];
+        jobType = (int) eventAttributes[0];
+        task = (int) eventAttributes[1];
         station = route[jobType][task];
 
         if (queues[station].isEmpty()) {
@@ -198,9 +199,9 @@ public class jobshop {
             /* The queue for this station is empty, so make a machine in this
            station idle. */
             stations[station].leave();
-            
+
         } else {
-            
+
             delays[station].record(simTime - queues[station].peek().arriveTime);
             eventSchedule(simTime + erlang(2, meanService[jobType][task], STREAM_SERVICE),
                     EVENT_DEPARTURE, jobType, task);
@@ -215,27 +216,14 @@ public class jobshop {
     }
 
     static void report() throws IOException /* Report generator function. */ {
-        float overall_avg_job_tot_delay, avg_job_tot_delay, sum_probs;
-
-        /* Compute the average total delay in queue for each job type and the
-       overall average job total delay. */
-        writer.write("\n\n\n\nJob type     Average total delay in queue\n");
-          overall_avg_job_tot_delay = sum_probs = (float) 0.0;
-        for (int i = 1; i <= numJobTypes; i++) {
-            avg_job_tot_delay = delays[i].getAverage() * numTasks[i];
-            writer.write("\n\n" + i + " " + avg_job_tot_delay + " ");
-            overall_avg_job_tot_delay += (probDistribJobType[i] - sum_probs) * avg_job_tot_delay;
-            sum_probs = probDistribJobType[i];
+        for (int i = 1; i <= stations.length-1; i++) {
+            stations[i].report(writer);
         }
-        writer.write("\n\nOverall average job total delay =" + overall_avg_job_tot_delay + "\n");
-
-        /* Compute the average number in queue, the average utilization, and the
-       average delay in queue for each station. */
-        writer.write("\n\n\n Work      Average number      Average       Average delay");
-        writer.write("\nstation       in queue       utilization        in queue");
-        for (int j = 1; j <= numStations; j++) {
-            writer.write("\n\n" + j + " " + stations[j].getAverage() + " " + delays[j].getAverage());
+        for (int i = 1; i <=delays.length-1; i++) {
+            delays[i].report(writer);
         }
+        
+        
     }
 
     static class Job {
