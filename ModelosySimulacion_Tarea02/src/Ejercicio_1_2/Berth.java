@@ -52,5 +52,17 @@ public class Berth {
         }            
     }
     
+    public float duplicateDeparture(float simtime){
+        float timeRemaining = this.shipDepartureTime-simtime;
+        this.shipDepartureTime=simtime+(timeRemaining*2);
+        return this.shipDepartureTime;
+    }
+    
+    public float reduceDeparture(float simtime){
+        float timeRemaining = this.shipDepartureTime-simtime;
+        this.shipDepartureTime= simtime+(timeRemaining/2);
+        return  this.shipDepartureTime;
+    }
+    
 
 }

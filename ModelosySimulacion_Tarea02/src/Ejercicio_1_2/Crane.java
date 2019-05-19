@@ -32,14 +32,18 @@ public class Crane {
         return this.usetime / simTime;
     }
 
-    public void notifyNewShip(float simtime, int berth) {
-        if (berth == favoriteBerth) {
-            if (state == BUSY) {
+    public float notifyNewShip(float simtime, int berth, Berth[] berths) {
+       if (berth == favoriteBerth) {
+            if (state == BUSY) { /*Estaba ocupada en el otro amarre*/
                 /*duplicar tiempo del otro amarre */
+                 int b = (berth == 1) ? 2:1;
+                  System.out.println("Duplique en amarre "+ b);
+            
                 actualBerth = berth;
 
                 usetime += (simtime - shipArrivalTime);/*termina de contar el tiempo de uso del otro barco*/
                 shipArrivalTime = simtime;
+                return berths[b].duplicateDeparture(simtime);
             } else {
                 state = BUSY;
                 actualBerth = berth;
@@ -47,12 +51,16 @@ public class Crane {
             }
         } else {
             if (state == IDLE) {
-                /*dividir el tiempo de amarre a la mitad*/
+                /*dividir el tiempo de amarre a la mitad*/           
+                System.out.println("Reduci em amarre " + berth);
+             
                 state = BUSY;
                 actualBerth = berth;
                 shipArrivalTime = simtime;
+                return berths[berth].reduceDeparture(simtime);
             }
         }
+        return 0;
     }
 
     public void endTask(float simtime) {

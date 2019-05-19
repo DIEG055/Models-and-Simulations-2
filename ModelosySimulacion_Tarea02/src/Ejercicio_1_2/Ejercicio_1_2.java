@@ -10,10 +10,10 @@ import simlib.collection.*;
 
 public class Ejercicio_1_2 {
 
-    static final int BUSY = 1, IDLE = 1, STREAM_ARRIVE = 1, STREAM_DEPARTURE = 2;
+    static final int BUSY = 1, IDLE = 0, STREAM_ARRIVE = 1, STREAM_DEPARTURE = 2;
     static final byte EVENT_ARRIVAL = 1, EVENT_DEPARTURE = 2, EVENT_END_SIMULATION = 3;
     static final float MEAN_ARRIVAL = 1.25f, MIN_TIME_UNLOADED = 0.5f,
-            MAX_TIME_UNLOADED = 1.5f, LENGTH_SIMULATION = 900;
+            MAX_TIME_UNLOADED = 1.5f, LENGTH_SIMULATION = 90;
     static float minTimeShip, maxTimeShip, totalTimeShips;
     static int uploadedShips;
 
@@ -51,7 +51,7 @@ public class Ejercicio_1_2 {
             timing();
             switch (eventType) {
                 case EVENT_ARRIVAL:
-                    arriveHarbor();
+                    arrive();
 
                     break;
                 case EVENT_DEPARTURE:
@@ -67,7 +67,7 @@ public class Ejercicio_1_2 {
 //        writer.close();
     }
 
-    static void arriveHarbor() {
+    static void arrive() {
         eventSchedule(simTime + expon(MEAN_ARRIVAL, STREAM_ARRIVE),
                 EVENT_ARRIVAL);
         if (berthsBusy()) {
@@ -116,6 +116,7 @@ public class Ejercicio_1_2 {
                 if (queueEmpty) {
                     berths[i].state = IDLE;
                 }
+//                System.out.println("salio del  amarre " + i+ " en el tiempo " + simTime);
                 break;
             }
         }
@@ -125,10 +126,16 @@ public class Ejercicio_1_2 {
         int emptyBerth = posBerthIdle();
         float departureTime = simTime + unifrm(MAX_TIME_UNLOADED, MAX_TIME_UNLOADED, STREAM_DEPARTURE);
         berths[emptyBerth].addShip(s, simTime, departureTime);
-        /*se avisa de llegada de barco a gruas*/
+//        System.out.println("ENTRO al amarre " + emptyBerth+ " en el tiempo " + simTime);
+        /*se avisa de llegada de barco a  gruas*/
         for (int i = 1; i < cranes.length; i++) {
-            cranes[i].notifyNewShip(simTime, emptyBerth);
+             float newdeparture = cranes[i].notifyNewShip(simTime, emptyBerth,berths);
+             if(newdeparture != 0){
+                 eventSchedule(newdeparture, EVENT_DEPARTURE);
+             }
         }
+        
+        
         /*se programa su salida*/
         eventSchedule(departureTime, EVENT_DEPARTURE);
     }
@@ -151,6 +158,7 @@ public class Ejercicio_1_2 {
 
     static int posBerthIdle() {
         if (!berths[1].busy() && !berths[2].busy()) {
+            
             double r = Math.random();
             return (r > 0.5) ? 1 : 2;
         } else if (!berths[1].busy()) {
