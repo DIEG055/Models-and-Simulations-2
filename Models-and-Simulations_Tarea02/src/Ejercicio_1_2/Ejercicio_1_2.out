@@ -1,0 +1,25 @@
+
+
+                 HARBOR SYSTEM          
+------------------------------------------------
+                   DATA INPUT           
+------------------------------------------------
+   Mean Arrival:                    1.25   
+   Min Time Unloaded:               0.5    
+   Max Time Unloaded:               1.5    
+   Length simulation:               90.0   
+------------------------------------------------
+                   DATA OUTPUT           
+------------------------------------------------
+   Ships in Harbor:                 55
+
+   Min Time Ship:                   0.7499962
+   Max Time Ship:                   4.4394307
+   Average Time in Harbor Ships:    1.2859483
+
+   Crane 1 Utilization:             0.50758564
+   Crane 2 Utilization:             0.50862044
+
+   Berth 1 Utilization:             0.42191848
+   Berth 2 Utilization:             0.31433284
+------------------------------------------------
