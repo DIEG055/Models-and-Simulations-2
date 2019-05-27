@@ -1,0 +1,39 @@
+
+
+                SISTEMA DE BANDA TRANSPORTADORA        
+-------------------------------------------------------------------
+
+   Tamaño del lote (unidades)                   : 1000
+
+   Media del tiempo de descarga (seg)           : 15,0
+   Desv. stand. del tiempo de descarga (seg)    : 3,0
+
+   Velocidad de la banda transportadora (m/seg) : 0,050
+   Largo de la banda transportadora (m)         : 30,00
+
+   Inciso a
+   Distancia fija entre cajas (m)               : 2,10
+
+   Inciso b
+   Distancia media entre cajas (m)              : 2,40
+
+
+   Variable EXPONENTIAL_CASE tiene el valor true, por lo tanto
+   se usará la distancia con dist. exponencial para inciso b)
+-------------------------------------------------------------------
+
+                          DATA OUTPUT           
+-------------------------------------------------------------------
+   Numero de cartones retirados              : 997
+   Numero de cartones NO retirados           : 3
+
+   Numero de cartones retirados por hora (X) : 73.556816
+
+   Numero de cartones que deja de  
+   descargar el empleado por hora (Y)        : 0.22133447
+
+   Maximizar X - Y                           : 73.33549
+
+   Tiempo simulacion : 48794,9 seg, equivalente a 13,5541 h
+
+-------------------------------------------------------------------

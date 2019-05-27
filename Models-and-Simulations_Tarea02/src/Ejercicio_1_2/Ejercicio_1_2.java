@@ -121,6 +121,7 @@ public class Ejercicio_1_2 {
                     if (cranes[j].actualBerth == i) {
                         cranes[j].endTask(simTime);
                     }
+                    
                 }
                 /*se guardan las estadisticas del barco */
                 totalTimeShips += timeInHarbor;
